@@ -5,6 +5,7 @@ original code written by [zaire](http://www.supitszaire.com), good code rewritte
 ## setup 💽
 
 - `git clone` this repo
+- `npm ci` to install prerequisites
 - copy `config.example.json` to `config.json`
 - edit the config file accordingly
 - ...
