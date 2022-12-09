@@ -49,10 +49,6 @@ const connect_voice = (voice_channel_id) => new Promise(async (resolve) => {
 		adapterCreator: voice_channel.guild.voiceAdapterCreator
 	});
 
-	connection.on(VoiceConnectionStatus.Disconnected, () => {
-		player.stop();
-	});
-
 	resolve(connection);
 });
 
