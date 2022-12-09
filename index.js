@@ -5,7 +5,7 @@
  * good code rewritten by mellodoot
  */
 
-const { Client, GatewayIntentBits, } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, } = require('discord.js');
 const { joinVoiceChannel, VoiceConnectionStatus, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 const icy = require('icy');
@@ -83,7 +83,10 @@ function set_activity(song_name) {
 	client.user.setPresence(
 		{
 			activities: [
-				{ name: `${song_name} on ${source.name} 📻` }
+				{
+					name: `${song_name} on ${source.name} 📻`,
+					type: ActivityType.Listening
+				}
 			],
 			status: 'online'
 		}
