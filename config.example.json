@@ -1,8 +1,10 @@
 {
 	"bot_token": "you should put your bot token here!",
+	"client_id": "place the bot's client id here!",
 	"source": {
 		"name": "untitled radio station",
-		"url": "https://epicstation/radio.mp3"
+		"url": "https://epicstation/radio.mp3",
+		"api": "https://epicstation/api/nowplaying"
 	},
 	"voice_channels": [
 		"012345678912345678"
