@@ -27,6 +27,23 @@ const { bot_token, source, voice_channels } = require('./config.json');
  * }
  */
 
+const commands = [];
+client.commands = new Collection();
+const commands_path = path.join(__dirname, 'commands');
+const command_files = fs.readdirSync(commands_path).filter(file => file.endsWith('.js'));
+
+for (const file of command_files) {
+    const file_path = path.join(commands_path, file);
+    const command = require(file_path);
+
+    if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+        commands.push(command.data.toJSON());
+    } else {
+        logger.warn(`the command at ${file_path} is missing a required "data" or "execute" property!`);
+    }
+}
+
 const player = createAudioPlayer();
 const stream = createAudioResource(source.url);
 
@@ -36,6 +53,10 @@ client.on('ready', async () => {
 		play_stream(connection);
 	});
 	init_metadata_reader(source.url);
+
+	client.guilds.fetch("736779848298660000").then(guild => {
+        guild.commands.set(commands);
+    });
 });
 
 /**

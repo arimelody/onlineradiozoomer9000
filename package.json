@@ -11,8 +11,8 @@
     "libsodium-wrappers": "^0.7.10"
   },
   "scripts": {
-    "start": "node .",
-    "dev": "nodemon ."
+    "start": "node --no-warnings .",
+    "dev": "nodemon --no-warnings ."
   },
   "keywords": [],
   "author": "mellodoot",
