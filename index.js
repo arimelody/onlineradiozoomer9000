@@ -5,9 +5,11 @@
  * good code rewritten by mellodoot
  */
 
-const { Client, GatewayIntentBits, ActivityType, } = require('discord.js');
+const fs = require('node:fs');
+const path = require('node:path');
+const { Client, Collection, Events, GatewayIntentBits, ActivityType, } = require('discord.js');
 const { joinVoiceChannel, VoiceConnectionStatus, createAudioPlayer, createAudioResource } = require('@discordjs/voice');
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
+const client = new Client({ autoreconnect: true, intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildVoiceStates] });
 const icy = require('icy');
 
 const { bot_token, source, voice_channels } = require('./config.json');
@@ -25,6 +27,23 @@ const { bot_token, source, voice_channels } = require('./config.json');
  * }
  */
 
+const commands = [];
+client.commands = new Collection();
+const commands_path = path.join(__dirname, 'commands');
+const command_files = fs.readdirSync(commands_path).filter(file => file.endsWith('.js'));
+
+for (const file of command_files) {
+    const file_path = path.join(commands_path, file);
+    const command = require(file_path);
+
+    if ('data' in command && 'execute' in command) {
+        client.commands.set(command.data.name, command);
+        commands.push(command.data.toJSON());
+    } else {
+        logger.warn(`the command at ${file_path} is missing a required "data" or "execute" property!`);
+    }
+}
+
 const player = createAudioPlayer();
 const stream = createAudioResource(source.url);
 
@@ -34,6 +53,10 @@ client.on('ready', async () => {
 		play_stream(connection);
 	});
 	init_metadata_reader(source.url);
+
+	client.guilds.fetch("736779848298660000").then(guild => {
+        guild.commands.set(commands);
+    });
 });
 
 /**
@@ -92,5 +115,35 @@ function set_activity(song_name) {
 		}
 	);
 }
+
+//in file command handling as seen on discord.js/guide
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const filePath = path.join(commandsPath, file);
+	const command = require(filePath);
+	client.commands.set(command.data.name, command);
+}
+
+client.once(Events.ClientReady, () => {
+	console.log('Ready!');
+});
+
+client.on(Events.InteractionCreate, async interaction => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const command = client.commands.get(interaction.commandName);
+
+	if (!command) return;
+
+	try {
+		await command.execute(interaction);
+	} catch (error) {
+		console.error(error);
+		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
+});
 
 client.login(bot_token);
