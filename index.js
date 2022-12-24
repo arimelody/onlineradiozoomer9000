@@ -53,10 +53,6 @@ client.on('ready', async () => {
 		play_stream(connection);
 	});
 	init_metadata_reader(source.url);
-
-	client.guilds.fetch("736779848298660000").then(guild => {
-        guild.commands.set(commands);
-    });
 });
 
 /**
