@@ -6,7 +6,8 @@
 		"url": "https://epicstation/radio.mp3",
 		"api": "https://epicstation/api/nowplaying"
 	},
-	"voice_channels": [
-		"012345678912345678"
-	]
+	"voice_channels": {
+		"GUILD_ID": "CHANNEL_ID",
+		"OTHER_GUILD_ID": "CHANNEL_ID"
+	}
 }

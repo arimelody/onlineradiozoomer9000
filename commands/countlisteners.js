@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 const { getVoiceConnection } = require('@discordjs/voice');
-const { source } = require('../config.json');
+const { source, voice_channels } = require('../config.json');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,9 +17,10 @@ module.exports = {
 
                 // get the voice channels that the bot is in
                 // (if there's only 1 listener in the channel, it's probably the bot. that doesn't count!)
-                const connected_channels = await interaction.client.guilds.cache.reduce(
-                    async (channels, guild) => {
-                        const channel = await guild.channels.fetch(getVoiceConnection(guild.id).joinConfig.channelId)
+                const connected_channels = await Object.keys(voice_channels).reduce(
+                    async (channels, guild_id) => {
+                        const guild = await interaction.client.guilds.fetch(guild_id);
+                        const channel = await guild.channels.fetch(voice_channels[guild_id]);
                         if (channel.members.size > 1) channels.push(channel);
                         return channels;
                     }, []);

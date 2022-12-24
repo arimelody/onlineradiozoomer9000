@@ -48,10 +48,11 @@ const player = createAudioPlayer();
 const stream = createAudioResource(source.url);
 
 client.on('ready', async () => {
-	voice_channels.forEach(async voice_channel => {
-		let connection = await connect_voice(voice_channel);
+	for (const [guild_id, channel_id] of Object.entries(voice_channels)) {
+		console.log(`joining channel ${channel_id} on ${guild_id}...`);
+		let connection = await connect_voice(channel_id);
 		play_stream(connection);
-	});
+	}
 	init_metadata_reader(source.url);
 });
 
