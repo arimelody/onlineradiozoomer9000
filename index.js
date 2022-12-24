@@ -49,7 +49,6 @@ const stream = createAudioResource(source.url);
 
 client.on('ready', async () => {
 	for (const [guild_id, channel_id] of Object.entries(voice_channels)) {
-		console.log(`joining channel ${channel_id} on ${guild_id}...`);
 		let connection = await connect_voice(channel_id);
 		play_stream(connection);
 	}
